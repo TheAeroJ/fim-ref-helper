@@ -4,4 +4,6 @@ import requests
 jfmKey = "***REMOVED***"
 authHead = "X-TBA-Auth-Key"
 
+tba = ""
 
+requests.request("GET", )
