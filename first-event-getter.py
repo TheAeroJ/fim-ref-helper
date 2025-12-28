@@ -1,11 +1,14 @@
+from dotenv import load_dotenv
 import base64
 import json
+import os
 import requests
 
 # Set up authorization
 # TODO: Figure out how to use some secrets manager to obfuscate these credentials in the codebase
-jmtoken = "***REMOVED***"
-jmusername = "***REMOVED***"
+load_dotenv()
+jmtoken = os.getenv("jmtoken")
+jmusername = os.getenv("jmusername")
 
 jmAuthString = jmusername + ":" + jmtoken
 jmAuthBytes = jmAuthString.encode('ascii')
