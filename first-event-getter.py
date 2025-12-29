@@ -5,7 +5,6 @@ import os
 import requests
 
 # Set up authorization
-# TODO: Figure out how to use some secrets manager to obfuscate these credentials in the codebase
 load_dotenv()
 jmtoken = os.getenv("jmtoken")
 jmusername = os.getenv("jmusername")
