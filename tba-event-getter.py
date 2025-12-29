@@ -8,6 +8,6 @@ load_dotenv()
 jfmKey = os.getenv("jfmKey")
 authHead = "X-TBA-Auth-Key"
 
-tba = ""
+baseApiURL = "https://www.thebluealliance.com/api/v3" # HOW!!!!!
 
 requests.request("GET", )

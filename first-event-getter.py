@@ -23,28 +23,30 @@ print("JSON Response: " + r.json().__str__())
 
 # Set up a Python object to store event data in the date range
 
-
-for seasonYear in range (2025, 2027):
+# Get events for each year in the range
+for seasonYear in range (2015, 2027):
     # Do things here
     apiString = 'https://frc-api.firstinspires.org/v3.0/' + str(seasonYear) + '/events?districtCode=FIM'
     yearEvents = requests.get(apiString, headers={'Authorization': 'Basic ' + authString, 'Accept': 'application/json'})
     
-    print("Status Code: " + yearEvents.status_code.__str__() + " " + yearEvents.reason)
     print("Headers: " + str(yearEvents.headers))
 
-
-    
-    print(str(seasonYear) + " Events: ")
-    try:
-        eventsJson = yearEvents.json()["Events"]
-        print("Received a JSON response")
-        print(json.dumps(eventsJson, indent=4))
-    except json.JSONDecodeError:
-        print("Failed to decode JSON response.")
+    # Need to fail if response code is not 200
+    if yearEvents.status_code != 200:
+        print("Failed to get events for year " + str(seasonYear))
+        print("Status Code: " + yearEvents.status_code.__str__() + " " + yearEvents.reason)
+    else:
+        print(str(seasonYear) + " Events: ")
         try:
-            eventsText = yearEvents.text
-            print("Received a plaintext response")
-            # print(eventsText)
-        except Exception as e:
-            print("Failed to get text response: " + str(e))
-            break
+            eventsJson = yearEvents.json()["Events"]
+            print("Received a JSON response for year " + str(seasonYear))
+            # print(json.dumps(eventsJson, indent=4))
+        except json.JSONDecodeError:
+            print("Failed to decode JSON response.")
+            try:
+                eventsText = yearEvents.text
+                print("Received a plaintext response for year " + str(seasonYear))
+                # print(eventsText)
+            except Exception as e:
+                print("Failed to get text response: " + str(e))
+                break
