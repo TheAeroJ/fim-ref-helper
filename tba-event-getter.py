@@ -1,3 +1,4 @@
+from datetime import date
 from dotenv import load_dotenv
 import json
 import os
@@ -17,4 +18,15 @@ requestHeaders = {
 
 requestParams = ""
 
-requests.request("GET", )
+# Establish date at time of request
+nextYear = date.today().year + 1
+
+# Set up a Python object to store event data in the date range
+eventsDict = {}
+
+# Get events for each year prior to the introduction of the district system
+for seasonYear in range(1992, 2010):
+    apiString = baseApiURL + "/events/" + str(seasonYear) + "/simple"
+    yearEvents = requests.get(apiString, headers=requestHeaders, params=requestParams)
+    # From yearEvents, create a dictionary of events filtered 
+
