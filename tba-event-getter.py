@@ -20,6 +20,11 @@ requestParams = ""
 
 # Establish date at time of request
 nextYear = date.today().year + 1
+# Specify region type (of District, State/Province, or Country)
+regionType = "district"
+regionID = "fim"
+stateID = "mi"
+countryID = ""
 
 # Set up a Python object to store event data in the date range
 eventsDict = {}
