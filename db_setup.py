@@ -1,14 +1,16 @@
-import dataset
+
 from dotenv import load_dotenv
 import argparse
 import os
+import sqlalchemy
 
 # Get environment variables; important for defining location of database
 load_dotenv()
 
 dbpath = os.getenv("dbpath")
 
-db = dataset.connect(dbpath)
+# Create the database engine
+engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
 
 # Define the database schema
 # Table events {
@@ -41,9 +43,6 @@ events.create_column('state_prov', type=db.types.string)
 events.create_column('year', type=db.types.integer)
 events.create_column('end_DoW', type=db.types.string)
 
-# print("Tables in the database: " + str(db.tables))
-# print("Columns in events table: " + str(events.columns))
-
 # Table people {
 #   id int [primary key, unique]
 #   first_name text [not null]
@@ -71,3 +70,8 @@ users = db.create_table('users', primary_id='id', primary_type=db.types.integer)
 users.create_column('person_id', type=db.types.integer)
 users.create_column('site_role', type=db.types.string)
 # NOTE: need to ensure we validate that the 'site_role' values are defined properly
+
+print("Tables in the database: " + str(db.tables))
+print("Columns in events table: " + str(events.columns))
+print("Columns in people table: " + str(people.columns))
+print("Columns in users table: " + str(users.columns))
