@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 import argparse
-import json
 import os
 import requests
 
