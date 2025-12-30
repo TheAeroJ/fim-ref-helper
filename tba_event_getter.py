@@ -1,20 +1,8 @@
 from datetime import date
-from dotenv import load_dotenv
 import json
 import os
 import requests
-
-load_dotenv()
-
-jfmKey = os.getenv("jfmKey")
-authHead = "X-TBA-Auth-Key"
-
-baseApiURL = "https://www.thebluealliance.com/api/v3"
-
-requestHeaders = {
-    authHead: jfmKey,
-    "Accept": "application/json"
-}
+from tba-handler import get_tba_response
 
 requestParams = ""
 
@@ -31,6 +19,7 @@ countryID = ""
 # Figure out the first year the region had district system if applicable
 if regionType == "district":
     # Query the TBA API to get district info
+
 
     
 
