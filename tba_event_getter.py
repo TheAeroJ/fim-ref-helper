@@ -2,7 +2,7 @@ from datetime import date
 import json
 import os
 import requests
-from tba-handler import get_tba_response
+from tba_handler import get_tba_response
 
 requestParams = ""
 
