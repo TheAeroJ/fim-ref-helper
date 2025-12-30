@@ -19,6 +19,7 @@ countryID = ""
 # Figure out the first year the region had district system if applicable
 if regionType == "district":
     # Query the TBA API to get district info
+    
 
 
     
@@ -31,20 +32,6 @@ for seasonYear in range(1992, 2010):
     apiString = baseApiURL + "/events/" + str(seasonYear) + "/simple"
     yearEvents = requests.get(apiString, headers=requestHeaders, params=requestParams)
     # From yearEvents, create a dictionary of events filtered 
-
-def getDistrictHistory(districtID):
-    apiString = baseApiURL + "/district/" + districtID + "/history"
-    districtHistory = requests.get(apiString, headers=requestHeaders, params=requestParams)
-    if districtHistory.status_code != 200:
-        print("Failed to get district history for " + districtID + ", status code: " + str(districtHistory.status_code))
-        return None
-    try:
-        historyJson = districtHistory.json()
-        return historyJson
-    except json.JSONDecodeError:
-        print("Failed to decode JSON response for district history.")
-        return None
-    
 
 def main():
     return
