@@ -4,9 +4,7 @@ import json
 import os
 import requests
 
-# Parse arguments
-
-def main():
+def get_tba_response(suffix):
     load_dotenv()
 
     jfmKey = os.getenv("jfmKey")
@@ -19,12 +17,17 @@ def main():
         "Accept": "application/json"
     }
 
-def scriptConfig():
-    # Add arguments as needed
-    return parser.parse_args()
+    apiString = baseApiURL + suffix
+    response = requests.get(apiString, headers=requestHeaders)
+    if response.status_code != 200:
+        print("Failed to get TBA response for suffix " + suffix + ", status code: " + str(response.status_code))
+        return None
+    else:
+        print("Successfully received TBA response for suffix " + suffix)
+        return response
     
 
-if __name__ == "__main__":
+if __name__ == "__get_tba_response__":
     parser = argparse.ArgumentParser(description="TBA Event Getter Script")
     parser.add_argument('--suffix', type=str, help='API suffix string to be appended to base URL', required=True, default='/status')
     args = parser.parse_args()
