@@ -9,69 +9,110 @@ load_dotenv()
 
 dbpath = os.getenv("dbpath")
 
-# Create the database engine
-engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
+def generateSqlCommand(stringList):
+    return "".join(stringList)
 
-# Define the database schema
-# Table events {
-#   id int [primary key, not null, unique]
-#   city text
-#   country text
-#   district dictrict_object
-#   end_date numeric
-#   event_code text
-#   event_type int
-#   key text [not null, unique]
-#   name text
-#   start_date numeric
-#   state_prov text
-#   year int [not null]
-#   end_DoW text [not null]
-# }
+def main():
 
-events = db.create_table('events', primary_id='id', primary_type=db.types.integer)
-events.create_column('city', type=db.types.string)
-events.create_column('country', type=db.types.string)
-events.create_column('district', type=db.types.string)
-events.create_column('end_date', type=db.types.date)
-events.create_column('event_code', type=db.types.string)
-events.create_column('event_type', type=db.types.integer)
-events.create_column('event_key', type=db.types.string)
-events.create_column('name', type=db.types.string)
-events.create_column('start_date', type=db.types.date)
-events.create_column('state_prov', type=db.types.string)
-events.create_column('year', type=db.types.integer)
-events.create_column('end_DoW', type=db.types.string)
+    # Create the database engine
+    engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
 
-# Table people {
-#   id int [primary key, unique]
-#   first_name text [not null]
-#   last_name text [not null]
-#   phone numeric
-#   rookie_season int [default: null]
-#   ref_role enum
-# }
+    with engine.connect() as connection:
+        # Everything needs to be done inside this block for initial database setup
 
-people = db.create_table('people', primary_id='id', primary_type=db.types.integer)
-people.create_column('first_name', type=db.types.string)
-people.create_column('last_name', type=db.types.string)
-people.create_column('phone', type=db.types.string)
-people.create_column('rookie_season', type=db.types.integer)
-people.create_column('ref_role', type=db.types.string)
-# NOTE: need to ensure we validate that the 'ref_role' values are defined properly
+        # Define the database schema
+        # Table events {
+        #   id int [primary key, not null, unique]
+        #   city text
+        #   country text
+        #   district dictrict_object
+        #   end_date numeric
+        #   event_code text
+        #   event_type int
+        #   key text [not null, unique]
+        #   name text
+        #   start_date numeric
+        #   state_prov text
+        #   year int [not null]
+        #   end_DoW text [not null]
+        # }
+        # Construct the giga string for creating the events table in a manner which is readable
+        eventsCreationStrings = [
+            "CREATE TABLE events (",
+            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
+            "city TEXT, ",
+            "country TEXT, ",
+            "district TEXT, ",
+            "end_date NUMERIC, ",
+            "event_code TEXT, ",
+            "event_type INTEGER, ",
+            "key TEXT NOT NULL UNIQUE, ",
+            "name TEXT, ",
+            "start_date NUMERIC, ",
+            "state_prov TEXT, ",
+            "year INTEGER NOT NULL, ",
+            "end_DoW TEXT NOT NULL)"
+        ]
+        eventGigaString = generateSqlCommand(eventsCreationStrings)
+        connection.execute(text(eventGigaString))
 
-# Table users {
-#   id int [primary key, unique]
-#   person_id int [unique]
-#   site_role enum
-# }
+        # Create the People table
 
-users = db.create_table('users', primary_id='id', primary_type=db.types.integer)
-users.create_column('person_id', type=db.types.integer)
-users.create_column('site_role', type=db.types.string)
-# NOTE: need to ensure we validate that the 'site_role' values are defined properly
+        # Table people {
+        #   id int [primary key, unique]
+        #   first_name text [not null]
+        #   last_name text [not null]
+        #   phone numeric
+        #   rookie_season int [default: null]
+        #   ref_role enum
+        # }
 
-print("Tables in the database: " + str(db.tables))
-print("Columns in events table: " + str(events.columns))
-print("Columns in people table: " + str(people.columns))
-print("Columns in users table: " + str(users.columns))
+        peopleCreationStrings = [
+            "CREATE TABLE people (",
+            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
+            "first_name TEXT NOT NULL, ",
+            "last_name TEXT NOT NULL, ",
+            "phone NUMERIC, ",
+            "rookie_season INTEGER DEFAULT NULL, ",
+            "ref_role TEXT)"
+        ]
+
+        peopleGigaString = generateSqlCommand(peopleCreationStrings)
+        connection.execute(text(peopleGigaString))
+
+        # NOTE: need to ensure we validate that the 'ref_role' values are defined properly
+
+        # Table users {
+        #   id int [primary key, unique]
+        #   person_id int [unique]
+        #   site_role enum
+        # }
+
+        usersCreationStrings = [
+            "CREATE TABLE users (",
+            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
+            "person_id INTEGER UNIQUE, ",
+            "site_role TEXT)"
+        ]
+
+        usersGigaString = generateSqlCommand(usersCreationStrings)
+        connection.execute(text(usersGigaString))
+
+        # NOTE: need to ensure we validate that the 'site_role' values are defined properly
+
+        connection.commit()
+
+    
+
+        # Table users {
+        #   id int [primary key, unique]
+        #   person_id int [unique]
+        #   site_role enum
+        # }
+
+    return
+    
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Database Setup Script")
+    args = parser.parse_args()
+    main()
