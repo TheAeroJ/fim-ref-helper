@@ -27,7 +27,7 @@ db = dataset.connect(dbpath)
 #   end_DoW text [not null]
 # }
 
-events = db.create_table('events', primary_id='id', primary_type='Integer')
+events = db.create_table('events', primary_id='id', primary_type=db.types.integer)
 events.create_column('city', type=db.types.string, nullable=False)
 events.create_column('country', type=db.types.string, nullable=False)
 events.create_column('district', type=db.types.string, nullable=True)
