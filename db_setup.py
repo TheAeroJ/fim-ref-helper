@@ -41,8 +41,8 @@ events.create_column('state_prov', type=db.types.string)
 events.create_column('year', type=db.types.integer)
 events.create_column('end_DoW', type=db.types.string)
 
-print("Tables in the database: " + str(db.tables))
-print("Columns in events table: " + str(events.columns))
+# print("Tables in the database: " + str(db.tables))
+# print("Columns in events table: " + str(events.columns))
 
 # Table people {
 #   id int [primary key, unique]
@@ -53,10 +53,21 @@ print("Columns in events table: " + str(events.columns))
 #   ref_role enum
 # }
 
-
+people = db.create_table('people', primary_id='id', primary_type=db.types.integer)
+people.create_column('first_name', type=db.types.string)
+people.create_column('last_name', type=db.types.string)
+people.create_column('phone', type=db.types.string)
+people.create_column('rookie_season', type=db.types.integer)
+people.create_column('ref_role', type=db.types.string)
+# NOTE: need to ensure we validate that the 'ref_role' values are defined properly
 
 # Table users {
 #   id int [primary key, unique]
 #   person_id int [unique]
 #   site_role enum
 # }
+
+users = db.create_table('users', primary_id='id', primary_type=db.types.integer)
+users.create_column('person_id', type=db.types.integer)
+users.create_column('site_role', type=db.types.string)
+# NOTE: need to ensure we validate that the 'site_role' values are defined properly
