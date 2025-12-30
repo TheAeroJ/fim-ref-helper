@@ -30,4 +30,4 @@ if __name__ == "__get_tba_response__":
     parser = argparse.ArgumentParser(description="TBA Event Getter Script")
     parser.add_argument('--suffix', type=str, help='API suffix string to be appended to base URL', required=True, default='/status')
     args = parser.parse_args()
-    main(args.suffix)
+    get_tba_response(args.suffix)
