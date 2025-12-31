@@ -120,7 +120,11 @@ def db_create():
 def db_modify(args_dict):
     # Need to think about what arguments I need in my modify function
     # DML (Data Manipulation Language) Statements to modify the database schema or data
-
+    # Set up default as failure case
+    results_dict = {
+        "status" : 1,
+        "message" : "Database modification failed."
+        }
 
     # What are we returning? Status code? Other data?
     
@@ -128,6 +132,10 @@ def db_modify(args_dict):
 
 def db_query(args_dict):
     # DQL (Data Query Language) Statements to query the database schema or data
+    results_dict = {
+        "status" : 1,
+        "message" : "Database query failed."
+        }
 
     # We should be returning a status code and the queried data
     return results_dict
