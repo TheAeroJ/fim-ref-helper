@@ -113,7 +113,7 @@ def db_query(args_dict):
     # We should be returning a status code and the queried data
     return results_dict
 
-def db_interact(mode, args):
+def db_operate(mode, args):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
     if mode == "create":
         db_create()
@@ -129,10 +129,12 @@ def db_interact(mode, args):
         # Do stuff
         return
     
-if __name__ == "__db_interact__":
+if __name__ == "__db_operate__":
+    print("Running db_operate.py directly from command line")
     parser = argparse.ArgumentParser(description="Database Setup Script")
     parser.add_argument('--mode', type=str, help='Mode to run the script in: create, modify, query', required=True)
     parser.add_argument('--args', type=dict, help='Arguments for modify or query modes', required=False, default={})
     # TODO: Consider adding an additional argument for environment variables such as the database path?
     args = parser.parse_args()
-    db_interact(args.mode , args.args)
+    print("Arguments parsed:", args)
+    db_operate(args.mode , args.args)
