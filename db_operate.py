@@ -17,18 +17,16 @@ load_dotenv()
 dbpath = os.getenv("dbpath")
 print("Database path from .env file: ", dbpath)
 
-def db_create():
+def db_create(args_dict):
     # Use DDL (Data Definition Language) Statements to create the database schema
     # Set up initial return dictionary
     results_dict = {
         "status" : 1,
         "message" : "Database creation failed."
         }
-
-    # Create the metadata object to use for our database
-    db_metadata_obj = sqlalchemy.MetaData()
-    # Create the database engine
-    engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
+    
+    db_metadata_obj = args_dict["db_metadata_obj"]
+    engine = args_dict["engine"]
 
     with engine.begin() as connection:
         # Everything needs to be done inside this block for initial database setup
@@ -107,14 +105,42 @@ def db_modify(args_dict):
         "message" : "Database modification failed."
         }
     
+    db_metadata_obj = args_dict["db_metadata_obj"]
+    engine = args_dict["engine"]
+    args = args_dict
+    
     # What kind of modifications are we making?
     # Type Insertions? Updates? Deletions?
+    if args.operation == "insert":
+        # Handle Insertions
+        # Validate input args
+        # Expected args: table_name (str), values (dict)
+        table_name = args.table_name
+        # Expected to be a dictionary of column names and their corresponding values, or a list of such dictionaries for multiple insertions
+        values = args.values
 
-    # Handle Insertions
-
-    # Handle Updates
-
-    # Handle Deletions
+        # Confirm table exists
+        if table_name not in db_metadata_obj.tables:
+            results_dict["message"] = f"Table {table_name} does not exist in the database."
+            return results_dict
+        else:
+            try:
+                table = db_metadata_obj.tables[table_name]
+                # NOTE: Need to validate that the keys in 'values' match the columns in the table
+                insert_stmt = table.insert().values(values)
+                with engine.begin() as connection:
+                    connection.execute(insert_stmt)
+            except Exception as e:
+                results_dict["message"] = f"Insertion failed: {e}"
+    elif args.operation == "update":
+        # Handle Updates
+        pass
+    elif args.operation == "delete":
+        # Handle Deletions
+        pass
+    else:
+        results_dict["message"] = "Invalid operation specified."
+        return results_dict
 
 
     # What are we returning? Status code? Other data?
@@ -127,7 +153,10 @@ def db_query(args_dict):
         "status" : 1,
         "message" : "Database query failed."
         }
-    
+    db_metadata_obj = args_dict["db_metadata_obj"]
+    engine = args_dict["engine"]
+    args = args_dict
+
     # Query the database based on the arguments provided
 
     # We should be returning a status code and the queried data
@@ -136,8 +165,16 @@ def db_query(args_dict):
 def db_operate(mode, args):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
     print("Operating in mode:", mode)
+
+    # Create the metadata object to use for our database
+    db_metadata_obj = sqlalchemy.MetaData()
+    # Create the database engine
+    engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
+
+    args.update({"db_metadata_obj": db_metadata_obj, "engine": engine})
+
     if mode == "create":
-        db_create()
+        db_create(args)
     elif mode == "modify":
         # Do stuff
         db_modify(args)
