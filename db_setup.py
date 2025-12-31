@@ -17,7 +17,9 @@ def main():
     # Create the database engine
     engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
 
-    with engine.connect() as connection:
+    db_metadata_obj = sqlalchemy.MetaData()
+
+    with engine.begin() as connection:
         # Everything needs to be done inside this block for initial database setup
 
         # Define the database schema
@@ -54,7 +56,7 @@ def main():
             "end_DoW TEXT NOT NULL)"
         ]
         eventGigaString = generateSqlCommand(eventsCreationStrings)
-        connection.execute(text(eventGigaString))
+        connection.execute(sqlalchemy.text(eventGigaString))
 
         # Create the People table
 
