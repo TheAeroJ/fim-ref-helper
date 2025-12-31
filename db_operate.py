@@ -6,6 +6,11 @@ import argparse
 import os
 import sqlalchemy
 
+# Other TODOs:
+# - Add logging instead of print statements
+# - Add error handling for database operations
+# - Look into Alembic for database migrations and updates...maybe overkill for now?
+
 # Get environment variables; important for defining location of database
 # TODO: Figure out whether these things should be passed as arguments instead?
 load_dotenv()
@@ -101,6 +106,16 @@ def db_modify(args_dict):
         "status" : 1,
         "message" : "Database modification failed."
         }
+    
+    # What kind of modifications are we making?
+    # Type Insertions? Updates? Deletions?
+
+    # Handle Insertions
+
+    # Handle Updates
+
+    # Handle Deletions
+
 
     # What are we returning? Status code? Other data?
     
@@ -112,6 +127,8 @@ def db_query(args_dict):
         "status" : 1,
         "message" : "Database query failed."
         }
+    
+    # Query the database based on the arguments provided
 
     # We should be returning a status code and the queried data
     return results_dict
