@@ -132,7 +132,7 @@ def db_query(args_dict):
     # We should be returning a status code and the queried data
     return results_dict
 
-def main(mode, args):
+def db_interact(mode, args):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
     if mode == "create":
         db_create()
@@ -148,9 +148,9 @@ def main(mode, args):
         # Do stuff
         return
     
-if __name__ == "__main__":
+if __name__ == "__db_interact__":
     parser = argparse.ArgumentParser(description="Database Setup Script")
     parser.add_argument('--mode', type=str, help='Mode to run the script in: create, modify, query', required=True)
     parser.add_argument('--args', type=dict, help='Arguments for modify or query modes', required=False, default={})
     args = parser.parse_args()
-    main(args.mode , args.args)
+    db_interact(args.mode , args.args)
