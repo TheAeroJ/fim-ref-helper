@@ -9,7 +9,7 @@ load_dotenv()
 
 dbpath = os.getenv("dbpath")
 
-def main():
+def db_create():
 
     # Create the metadata object to use for our database
     db_metadata_obj = sqlalchemy.MetaData()
@@ -104,6 +104,28 @@ def main():
         db_metadata_obj.create_all(engine)
 
     return
+
+def db_modify(args_dict):
+    return
+
+def db_query(args_dict):
+    return
+
+def main(mode, args):
+    # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
+    if mode == "create":
+        db_create()
+    elif mode == "modify":
+        # Do stuff
+        db_modify(args)
+        return
+    elif mode == "query":
+        # Do stuff
+        db_query(args)
+        return
+    else:
+        # Do stuff
+        return
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Database Setup Script")
