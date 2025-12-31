@@ -8,6 +8,7 @@ import sqlalchemy
 # TODO: Figure out whether these things should be passed as arguments instead?
 load_dotenv()
 dbpath = os.getenv("dbpath")
+print("Database path from .env file: ", dbpath)
 
 def db_create():
     # Use DDL (Data Definition Language) Statements to create the database schema
@@ -69,9 +70,9 @@ def db_create():
         )
         # NOTE: need to ensure we validate that the 'site_role' values are defined properly
 
-        # Create the Crew table
-        crew_table = sqlalchemy.Table(
-            'crew',
+        # Create the Volunteer Assignments table
+        volunteer_assignments = sqlalchemy.Table(
+            'volunteer_assignments',
             db_metadata_obj,
             sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, nullable=False, unique=True),
             sqlalchemy.Column('event_id', sqlalchemy.ForeignKey('events.id')),
@@ -115,6 +116,7 @@ def db_query(args_dict):
 
 def db_operate(mode, args):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
+    print("Operating in mode:", mode)
     if mode == "create":
         db_create()
     elif mode == "modify":
@@ -129,7 +131,7 @@ def db_operate(mode, args):
         # Do stuff
         return
     
-if __name__ == "__db_operate__":
+if __name__ == "__main__":
     print("Running db_operate.py directly from command line")
     parser = argparse.ArgumentParser(description="Database Setup Script")
     parser.add_argument('--mode', type=str, help='Mode to run the script in: create, modify, query', required=True)
