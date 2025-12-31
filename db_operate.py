@@ -5,11 +5,17 @@ import os
 import sqlalchemy
 
 # Get environment variables; important for defining location of database
+# TODO: Figure out whether these things should be passed as arguments instead?
 load_dotenv()
-
 dbpath = os.getenv("dbpath")
 
 def db_create():
+    # Use DDL (Data Definition Language) Statements to create the database schema
+    # Set up initial return dictionary
+    results_dict = {
+        "status" : 1,
+        "message" : "Database creation failed."
+        }
 
     # Create the metadata object to use for our database
     db_metadata_obj = sqlalchemy.MetaData()
@@ -101,17 +107,32 @@ def db_create():
         )
 
         # Create all tables in the database?
-        db_metadata_obj.create_all(engine)
+        try:
+            db_metadata_obj.create_all(engine)
+        except Exception as e:
+            results_dict["message"] = f"Database creation failed: {e}"
+        else:
+            results_dict["status"] = 0
+            results_dict["message"] = "Database created successfully."
 
-    return
+    return results_dict
 
 def db_modify(args_dict):
-    return
+    # Need to think about what arguments I need in my modify function
+    # DML (Data Manipulation Language) Statements to modify the database schema or data
+
+
+    # What are we returning? Status code? Other data?
+    
+    return results_dict
 
 def db_query(args_dict):
-    return
+    # DQL (Data Query Language) Statements to query the database schema or data
 
-def main(mode, args):
+    # We should be returning a status code and the queried data
+    return results_dict
+
+def db_interact(mode, args):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
     if mode == "create":
         db_create()
@@ -127,7 +148,10 @@ def main(mode, args):
         # Do stuff
         return
     
-if __name__ == "__main__":
+if __name__ == "__db_interact__":
     parser = argparse.ArgumentParser(description="Database Setup Script")
+    parser.add_argument('--mode', type=str, help='Mode to run the script in: create, modify, query', required=True)
+    parser.add_argument('--args', type=dict, help='Arguments for modify or query modes', required=False, default={})
+    # TODO: Consider adding an additional argument for environment variables such as the database path?
     args = parser.parse_args()
-    main()
+    db_interact(args.mode , args.args)
