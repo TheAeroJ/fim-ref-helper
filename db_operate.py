@@ -1,4 +1,6 @@
-
+"""
+A script and module to handle database operations for the FIM Referee Helper application.
+"""
 from dotenv import load_dotenv
 import argparse
 import os
