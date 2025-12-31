@@ -26,22 +26,7 @@ def db_create():
         # Everything needs to be done inside this block for initial database setup
 
         # Define the database schema
-
-        # Table events {
-        #   id int [primary key, not null, unique]
-        #   city text
-        #   country text
-        #   district dictrict_object
-        #   end_date numeric
-        #   event_code text
-        #   event_type int
-        #   key text [not null, unique]
-        #   name text
-        #   start_date numeric
-        #   state_prov text
-        #   year int [not null]
-        #   end_DoW text [not null]
-        # }
+        # Events table
         events_table = sqlalchemy.Table(
             'events',
             db_metadata_obj,
@@ -61,15 +46,6 @@ def db_create():
         )
 
         # Create the People table
-
-        # Table people {
-        #   id int [primary key, unique]
-        #   first_name text [not null]
-        #   last_name text [not null]
-        #   phone numeric
-        #   rookie_season int [default: null]
-        #   ref_role enum
-        # }
         people_table = sqlalchemy.Table(
             'people',
             db_metadata_obj,
@@ -83,11 +59,7 @@ def db_create():
 
         # NOTE: need to ensure we validate that the 'ref_role' values are defined properly
 
-        # Table users {
-        #   id int [primary key, unique]
-        #   person_id int [unique]
-        #   site_role enum
-        # }
+        # Create the Users table
         users_table = sqlalchemy.Table(
             'users',
             db_metadata_obj,
@@ -97,6 +69,7 @@ def db_create():
         )
         # NOTE: need to ensure we validate that the 'site_role' values are defined properly
 
+        # Create the Crew table
         crew_table = sqlalchemy.Table(
             'crew',
             db_metadata_obj,
@@ -106,7 +79,7 @@ def db_create():
             sqlalchemy.Column('role', sqlalchemy.Text)
         )
 
-        # Create all tables in the database?
+        # Create all tables in the database
         try:
             db_metadata_obj.create_all(engine)
         except Exception as e:
