@@ -103,8 +103,6 @@ def main():
         # Create all tables in the database?
         db_metadata_obj.create_all(engine)
 
-        connection.commit()
-
     return
     
 if __name__ == "__main__":
