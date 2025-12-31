@@ -9,9 +9,6 @@ load_dotenv()
 
 dbpath = os.getenv("dbpath")
 
-def generateSqlCommand(stringList):
-    return "".join(stringList)
-
 def main():
 
     # Create the metadata object to use for our database
@@ -23,6 +20,7 @@ def main():
         # Everything needs to be done inside this block for initial database setup
 
         # Define the database schema
+
         # Table events {
         #   id int [primary key, not null, unique]
         #   city text
@@ -38,25 +36,23 @@ def main():
         #   year int [not null]
         #   end_DoW text [not null]
         # }
-        # Construct the giga string for creating the events table in a manner which is readable
-        eventsCreationStrings = [
-            "CREATE TABLE events (",
-            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
-            "city TEXT, ",
-            "country TEXT, ",
-            "district TEXT, ",
-            "end_date NUMERIC, ",
-            "event_code TEXT, ",
-            "event_type INTEGER, ",
-            "key TEXT NOT NULL UNIQUE, ",
-            "name TEXT, ",
-            "start_date NUMERIC, ",
-            "state_prov TEXT, ",
-            "year INTEGER NOT NULL, ",
-            "end_DoW TEXT NOT NULL)"
-        ]
-        eventGigaString = generateSqlCommand(eventsCreationStrings)
-        connection.execute(sqlalchemy.text(eventGigaString))
+        events_table = sqlalchemy.Table(
+            'events',
+            db_metadata_obj,
+            sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, nullable=False, unique=True),
+            sqlalchemy.Column('city', sqlalchemy.Text),
+            sqlalchemy.Column('country', sqlalchemy.Text),
+            sqlalchemy.Column('district', sqlalchemy.Text),
+            sqlalchemy.Column('end_date', sqlalchemy.Numeric),
+            sqlalchemy.Column('event_code', sqlalchemy.Text),
+            sqlalchemy.Column('event_type', sqlalchemy.Integer),
+            sqlalchemy.Column('key', sqlalchemy.Text, nullable=False, unique=True),
+            sqlalchemy.Column('name', sqlalchemy.Text),
+            sqlalchemy.Column('start_date', sqlalchemy.Numeric),
+            sqlalchemy.Column('state_prov', sqlalchemy.Text),
+            sqlalchemy.Column('year', sqlalchemy.Integer, nullable=False),
+            sqlalchemy.Column('end_DoW', sqlalchemy.Text, nullable=False)
+        )
 
         # Create the People table
 
@@ -68,19 +64,16 @@ def main():
         #   rookie_season int [default: null]
         #   ref_role enum
         # }
-
-        peopleCreationStrings = [
-            "CREATE TABLE people (",
-            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
-            "first_name TEXT NOT NULL, ",
-            "last_name TEXT NOT NULL, ",
-            "phone NUMERIC, ",
-            "rookie_season INTEGER DEFAULT NULL, ",
-            "ref_role TEXT)"
-        ]
-
-        peopleGigaString = generateSqlCommand(peopleCreationStrings)
-        connection.execute(text(peopleGigaString))
+        people_table = sqlalchemy.Table(
+            'people',
+            db_metadata_obj,
+            sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, nullable=False, unique=True),
+            sqlalchemy.Column('first_name', sqlalchemy.Text, nullable=False),
+            sqlalchemy.Column('last_name', sqlalchemy.Text, nullable=False),
+            sqlalchemy.Column('phone', sqlalchemy.Numeric),
+            sqlalchemy.Column('rookie_season', sqlalchemy.Integer, default=None),
+            sqlalchemy.Column('ref_role', sqlalchemy.Text)
+        )
 
         # NOTE: need to ensure we validate that the 'ref_role' values are defined properly
 
@@ -89,28 +82,28 @@ def main():
         #   person_id int [unique]
         #   site_role enum
         # }
-
-        usersCreationStrings = [
-            "CREATE TABLE users (",
-            "id INTEGER PRIMARY KEY NOT NULL UNIQUE, ",
-            "person_id INTEGER UNIQUE, ",
-            "site_role TEXT)"
-        ]
-
-        usersGigaString = generateSqlCommand(usersCreationStrings)
-        connection.execute(text(usersGigaString))
-
+        users_table = sqlalchemy.Table(
+            'users',
+            db_metadata_obj,
+            sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, nullable=False, unique=True),
+            sqlalchemy.Column('person_id', sqlalchemy.ForeignKey('people.id'), unique=True),
+            sqlalchemy.Column('site_role', sqlalchemy.Text)
+        )
         # NOTE: need to ensure we validate that the 'site_role' values are defined properly
 
+        crew_table = sqlalchemy.Table(
+            'crew',
+            db_metadata_obj,
+            sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, nullable=False, unique=True),
+            sqlalchemy.Column('event_id', sqlalchemy.ForeignKey('events.id')),
+            sqlalchemy.Column('person_id', sqlalchemy.ForeignKey('people.id')),
+            sqlalchemy.Column('role', sqlalchemy.Text)
+        )
+
+        # Create all tables in the database?
+        db_metadata_obj.create_all(engine)
+
         connection.commit()
-
-    
-
-        # Table users {
-        #   id int [primary key, unique]
-        #   person_id int [unique]
-        #   site_role enum
-        # }
 
     return
     
