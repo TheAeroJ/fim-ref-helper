@@ -14,10 +14,10 @@ def generateSqlCommand(stringList):
 
 def main():
 
+    # Create the metadata object to use for our database
+    db_metadata_obj = sqlalchemy.MetaData()
     # Create the database engine
     engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
-
-    db_metadata_obj = sqlalchemy.MetaData()
 
     with engine.begin() as connection:
         # Everything needs to be done inside this block for initial database setup
