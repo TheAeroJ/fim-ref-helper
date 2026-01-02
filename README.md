@@ -1,6 +1,7 @@
 # FIM Referee Helper
 
 ## Roadmap
+- [ ] SQLAlchemy wrapper to handle database management on this application
 - [ ] User registration + profile service
 - [ ] User event history
 - [ ] Michigan event history
