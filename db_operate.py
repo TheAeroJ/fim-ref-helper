@@ -27,7 +27,7 @@ def args_validate(args_dict):
         "message" : "Unknown error during argument validation."
     }
 
-    # Lay out logic for validating arguments based on operation type
+   # Lay out logic for validating arguments based on operation type
     # Required arguments:
         # Metadata object
         # Engine
@@ -43,6 +43,41 @@ def args_validate(args_dict):
             # table_name (str): Name of the table to query
             # filters (dict): Filters to apply to the query
 
+    if "db_metadata_obj" not in args_dict or "engine" not in args_dict:
+        results_dict["message"] = "Missing required arguments: db_metadata_obj and engine are required."
+        return results_dict
+    
+    if "operation_type" not in args_dict:
+        results_dict["message"] = "Missing required argument: operation_type is required."
+        return results_dict
+
+    op_type = args_dict["operation_type"]
+    if op_type not in ["create", "modify", "query"]:
+        results_dict["message"] = "Invalid operation_type specified. Must be one of: create, modify, query."
+        return results_dict
+    elif op_type == "modify":
+        # Validate modify-specific arguments
+        if "operation" not in args_dict or "table_name" not in args_dict or "values" not in args_dict:
+            results_dict["message"] = "Missing required arguments for modify operation: operation, table_name, and values are required."
+            return results_dict
+        elif "operation" not in ["insert", "update", "delete"]:
+            results_dict["message"] = "Invalid operation specified for modify operation. Must be one of: insert, update, delete."
+            return results_dict
+        elif args_dict["operation"] == "insert":
+            # Handle requirements for insertions
+            if not isinstance(args_dict["values"], (dict, list)):
+                results_dict["message"] = "Invalid values argument for insert operation. Must be a dictionary or a list of dictionaries."
+                return results_dict
+        elif args_dict["operation"] == "update":
+            # Handle requirements for updates
+            pass
+        elif args_dict["operation"] == "delete":
+            # Handle requirements for deletions
+            pass
+
+    elif op_type == "query":
+        # Validate query-specific arguments
+        pass
 
     return results_dict
 
