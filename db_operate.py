@@ -20,7 +20,31 @@ print("Database path from .env file: ", dbpath)
 def args_validate(args_dict):
     # Validate the arguments passed in the args_dict
     # Ensure required arguments are present and valid
-    pass
+
+    # Set up default as failure case
+    results_dict = {
+        "status" : 1,
+        "message" : "Unknown error during argument validation."
+    }
+
+    # Lay out logic for validating arguments based on operation type
+    # Required arguments:
+        # Metadata object
+        # Engine
+    # Additional arguments based on operation type:
+        # Create
+            # None for now -- currently the creation logic is static and fully contained within the db_create function
+        # Modify
+            # operation (str): Type of modification (insert, update, delete)
+            # table_name (str): Name of the table to modify
+            # values (dict): Values to insert/update/delete
+        # Query
+            # operation (str): Type of query (select, filter, aggregate)
+            # table_name (str): Name of the table to query
+            # filters (dict): Filters to apply to the query
+
+
+    return results_dict
 
 def db_create(args_dict):
     # Use DDL (Data Definition Language) Statements to create the database schema
