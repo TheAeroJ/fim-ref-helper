@@ -17,6 +17,11 @@ load_dotenv()
 dbpath = os.getenv("dbpath")
 print("Database path from .env file: ", dbpath)
 
+def args_validate(args_dict):
+    # Validate the arguments passed in the args_dict
+    # Ensure required arguments are present and valid
+    pass
+
 def db_create(args_dict):
     # Use DDL (Data Definition Language) Statements to create the database schema
     # Set up initial return dictionary
@@ -117,6 +122,9 @@ def db_modify(args_dict):
         # Expected args: table_name (str), values (dict)
         table_name = args.table_name
         # Expected to be a dictionary of column names and their corresponding values, or a list of such dictionaries for multiple insertions
+        # NOTE: If a list of dictionaries is provided, the first dictionary will be used to validate the column names and, as such, must include ALL columns
+        # TODO: Figure out whether we should do some sanitization/validation of the input intelligently
+        # we want to make sure we don't have any errors with improper column names
         values = args.values
 
         # Confirm table exists
@@ -127,9 +135,12 @@ def db_modify(args_dict):
             try:
                 table = db_metadata_obj.tables[table_name]
                 # NOTE: Need to validate that the keys in 'values' match the columns in the table
-                insert_stmt = table.insert().values(values)
                 with engine.begin() as connection:
-                    connection.execute(insert_stmt)
+                    result = connection.execute(
+                        sqlalchemy.insert(table),
+                        values
+                    )
+                    results_dict["result"] = result
             except Exception as e:
                 results_dict["message"] = f"Insertion failed: {e}"
     elif args.operation == "update":
@@ -159,6 +170,7 @@ def db_query(args_dict):
 
     # Query the database based on the arguments provided
 
+
     # We should be returning a status code and the queried data
     return results_dict
 
@@ -171,6 +183,7 @@ def db_operate(mode, args):
     # Create the database engine
     engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
 
+    # Append the db metadata object and engine to the args dictionary
     args.update({"db_metadata_obj": db_metadata_obj, "engine": engine})
 
     if mode == "create":
@@ -181,8 +194,8 @@ def db_operate(mode, args):
         return
     elif mode == "query":
         # Do stuff
-        db_query(args)
-        return
+        query_result = db_query(args)
+        return query_result
     else:
         # Do stuff
         return
