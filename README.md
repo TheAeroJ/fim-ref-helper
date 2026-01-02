@@ -2,6 +2,7 @@
 
 ## Roadmap
 - [ ] SQLAlchemy wrapper to handle database management on this application
+- [ ] Flask-based webapp to serve pages over a web server
 - [ ] User registration + profile service
 - [ ] User event history
 - [ ] Michigan event history
