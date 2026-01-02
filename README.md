@@ -1,5 +1,5 @@
 # FIM Referee Helper
-#### Video Demo: https://youtu.be/50eTgbQD77I
+
 #### Description:
 This project consists of a web application designed to assist FIRST in Michigan FIRST Robotics Competition Head Referees with their responsibilities. The initial version (my "MVP") is intended to do the following:
 - Show a schedule of events for the upcoming season (at the time of this writing, the 2026 FIRST Robotics Competition district season)
