@@ -17,7 +17,7 @@ load_dotenv()
 dbpath = os.getenv("dbpath")
 print("Database path from .env file: ", dbpath)
 
-def args_validate(args_dict):
+def args_validate(**kwargs):
     # Validate the arguments passed in the args_dict
     # Ensure required arguments are present and valid
 
@@ -43,54 +43,52 @@ def args_validate(args_dict):
             # table_name (str): Name of the table to query
             # filters (dict): Filters to apply to the query
 
-    if "db_metadata_obj" not in args_dict or "engine" not in args_dict:
+    if "db_metadata_obj" not in kwargs or "engine" not in kwargs:
         results_dict["message"] = "Missing required arguments: db_metadata_obj and engine are required."
         return results_dict
-    
-    if "operation_type" not in args_dict:
+
+    if "operation_type" not in kwargs:
         results_dict["message"] = "Missing required argument: operation_type is required."
         return results_dict
 
-    op_type = args_dict["operation_type"]
-    if op_type not in ["create", "modify", "query"]:
+    if kwargs["operation_type"] not in ["create", "modify", "query"]:
         results_dict["message"] = "Invalid operation_type specified. Must be one of: create, modify, query."
         return results_dict
-    elif op_type == "modify":
+    elif kwargs["operation_type"] == "modify":
         # Validate modify-specific arguments
-        if "operation" not in args_dict or "table_name" not in args_dict or "values" not in args_dict:
+        if "operation" not in kwargs or "table_name" not in kwargs or "values" not in kwargs:
             results_dict["message"] = "Missing required arguments for modify operation: operation, table_name, and values are required."
             return results_dict
         elif "operation" not in ["insert", "update", "delete"]:
             results_dict["message"] = "Invalid operation specified for modify operation. Must be one of: insert, update, delete."
             return results_dict
-        elif args_dict["operation"] == "insert":
+        elif kwargs["operation"] == "insert":
             # Handle requirements for insertions
-            if not isinstance(args_dict["values"], (dict, list)):
+            if not isinstance(kwargs["values"], (dict, list)):
                 results_dict["message"] = "Invalid values argument for insert operation. Must be a dictionary or a list of dictionaries."
                 return results_dict
-        elif args_dict["operation"] == "update":
+        elif kwargs["operation"] == "update":
             # Handle requirements for updates
             pass
-        elif args_dict["operation"] == "delete":
+        elif kwargs["operation"] == "delete":
             # Handle requirements for deletions
             pass
-
-    elif op_type == "query":
+    elif kwargs["operation_type"] == "query":
         # Validate query-specific arguments
         pass
 
     return results_dict
 
-def db_create(args_dict):
+def db_create(**kwargs):
     # Use DDL (Data Definition Language) Statements to create the database schema
     # Set up initial return dictionary
     results_dict = {
         "status" : 1,
         "message" : "Database creation failed."
         }
-    
-    db_metadata_obj = args_dict["db_metadata_obj"]
-    engine = args_dict["engine"]
+
+    db_metadata_obj = kwargs["db_metadata_obj"]
+    engine = kwargs["engine"]
 
     with engine.begin() as connection:
         # Everything needs to be done inside this block for initial database setup
@@ -160,7 +158,7 @@ def db_create(args_dict):
 
     return results_dict
 
-def db_modify(args_dict):
+def db_modify(**kwargs):
     # Need to think about what arguments I need in my modify function
     # DML (Data Manipulation Language) Statements to modify the database schema or data
     # Set up default as failure case
@@ -168,23 +166,22 @@ def db_modify(args_dict):
         "status" : 1,
         "message" : "Database modification failed."
         }
-    
-    db_metadata_obj = args_dict["db_metadata_obj"]
-    engine = args_dict["engine"]
-    args = args_dict
+
+    db_metadata_obj = kwargs["db_metadata_obj"]
+    engine = kwargs["engine"]
     
     # What kind of modifications are we making?
     # Type Insertions? Updates? Deletions?
-    if args.operation == "insert":
+    if kwargs["operation"] == "insert":
         # Handle Insertions
         # Validate input args
         # Expected args: table_name (str), values (dict)
-        table_name = args.table_name
+        table_name = kwargs["table_name"]
         # Expected to be a dictionary of column names and their corresponding values, or a list of such dictionaries for multiple insertions
         # NOTE: If a list of dictionaries is provided, the first dictionary will be used to validate the column names and, as such, must include ALL columns
         # TODO: Figure out whether we should do some sanitization/validation of the input intelligently
         # we want to make sure we don't have any errors with improper column names
-        values = args.values
+        values = kwargs["values"]
 
         # Confirm table exists
         if table_name not in db_metadata_obj.tables:
@@ -202,10 +199,10 @@ def db_modify(args_dict):
                     results_dict["result"] = result
             except Exception as e:
                 results_dict["message"] = f"Insertion failed: {e}"
-    elif args.operation == "update":
+    elif kwargs["operation"] == "update":
         # Handle Updates
         pass
-    elif args.operation == "delete":
+    elif kwargs["operation"] == "delete":
         # Handle Deletions
         pass
     else:
@@ -217,15 +214,14 @@ def db_modify(args_dict):
     
     return results_dict
 
-def db_query(args_dict):
+def db_query(**kwargs):
     # DQL (Data Query Language) Statements to query the database schema or data
     results_dict = {
         "status" : 1,
         "message" : "Database query failed."
         }
-    db_metadata_obj = args_dict["db_metadata_obj"]
-    engine = args_dict["engine"]
-    args = args_dict
+    db_metadata_obj = kwargs["db_metadata_obj"]
+    engine = kwargs["engine"]
 
     # Query the database based on the arguments provided
 
@@ -233,7 +229,7 @@ def db_query(args_dict):
     # We should be returning a status code and the queried data
     return results_dict
 
-def db_operate(mode, args):
+def db_operate(mode: str, **kwargs):
     # Logic to figure out whether we are setting up our db for the first time or whether we are working with the existing db
     print("Operating in mode:", mode)
 
@@ -243,17 +239,17 @@ def db_operate(mode, args):
     engine = sqlalchemy.create_engine("sqlite+pysqlite:///" + dbpath, echo=True)
 
     # Append the db metadata object and engine to the args dictionary
-    args.update({"db_metadata_obj": db_metadata_obj, "engine": engine})
+    kwargs.update({"db_metadata_obj": db_metadata_obj, "engine": engine})
 
     if mode == "create":
-        db_create(args)
+        db_create(kwargs)
     elif mode == "modify":
         # Do stuff
-        db_modify(args)
+        db_modify(kwargs)
         return
     elif mode == "query":
         # Do stuff
-        query_result = db_query(args)
+        query_result = db_query(kwargs)
         return query_result
     else:
         # Do stuff
