@@ -19,7 +19,7 @@
 
 ### Backend
 
-## CS50 Final Project walkthrough + report
+## Walkthrough + report
 
 ### Description:
 This project consists of a web application designed to assist FIRST in Michigan FIRST Robotics Competition Head Referees with their responsibilities. The initial version (my "MVP") is intended to do the following:
@@ -79,7 +79,7 @@ I toyed with the idea of building a React application, with the goal of eventual
 
 ##### A _lot_ of time was lost to learning and handling the SQLAlchemy connections to manage the backend of my database
 
-While I understood that the CS50 libraries significantly simplified interaction with a SQLite database, I _significantly_ underestimated the extent to which that was true. I began reading through the documentation for SQLAlchemy, and quickly started to feel a bit overwhelmed by the amount of detail and the number of Python idioms were, apparently, required to grok the documentation there. I set out in search of something _similar_ to the CS50 library, but which was more of an industry standard. I quickly stumbled across [Dataset](https://dataset.readthedocs.io/en/latest/index.html#), which seemed perfect! I began to write my database manipulation and creation logic using Dataset as a base. Before long, though, in testing my code I discovered some interesting errors, and while investigating discovered a section in the Dataset documentation I had missed (read: not gotten all the way to reading)...
+While I understood that <**REMOVED**> libraries significantly simplified interaction with a SQLite database, I _significantly_ underestimated the extent to which that was true. I began reading through the documentation for SQLAlchemy, and quickly started to feel a bit overwhelmed by the amount of detail and the number of Python idioms were, apparently, required to grok the documentation there. I set out in search of something _similar_ to the CS50 library, but which was more of an industry standard. I quickly stumbled across [Dataset](https://dataset.readthedocs.io/en/latest/index.html#), which seemed perfect! I began to write my database manipulation and creation logic using Dataset as a base. Before long, though, in testing my code I discovered some interesting errors, and while investigating discovered a section in the Dataset documentation I had missed (read: not gotten all the way to reading)...
 
 > Some of the specific aspects of SQL that are not exposed in dataset, and are considered out of scope for the project, include:
 > - Foreign key relationships between tables, and expressing one-to-many and many-to-many relationships in idiomatic Python.
