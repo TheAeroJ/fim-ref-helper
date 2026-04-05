@@ -200,7 +200,7 @@ def db_modify(**kwargs):
             except Exception as e:
                 results_dict["message"] = f"Insertion failed: {e}"
     elif kwargs["operation"] == "update":
-        # Handle Updates
+        # TODO: Handle Updates
         pass
     elif kwargs["operation"] == "delete":
         # Handle Deletions
@@ -223,6 +223,7 @@ def db_query(**kwargs):
     db_metadata_obj = kwargs["db_metadata_obj"]
     engine = kwargs["engine"]
 
+    # TODO: Implement query logic
     # Query the database based on the arguments provided
 
 
