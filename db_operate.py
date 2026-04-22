@@ -203,7 +203,7 @@ def db_modify(**kwargs):
         # TODO: Handle Updates
         pass
     elif kwargs["operation"] == "delete":
-        # Handle Deletions
+        # TODO: Handle Deletions
         pass
     else:
         results_dict["message"] = "Invalid operation specified."
