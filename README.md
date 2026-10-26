@@ -23,7 +23,7 @@
 
 ### Description:
 This project consists of a web application designed to assist FIRST in Michigan FIRST Robotics Competition Head Referees with their responsibilities. The initial version (my "MVP") is intended to do the following:
-- Show a schedule of events for the upcoming season (at the time of this writing, the 2026 FIRST Robotics Competition district season)
+- Show a schedule of events for the upcoming season (at the time of this writing, the 2027 FIRST Robotics Competition district season)
 - Show a history of _all_ prior FIRST Robotics Competition events in the state of Michigan, which detail:
     - Dates of the events
     - Location of the events
